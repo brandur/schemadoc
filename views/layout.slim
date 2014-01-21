@@ -1,0 +1,20 @@
+doctype 5
+
+html lang='en'
+  head
+    title= @title ? @title : schema.raw["title"]
+
+    meta content='text/html; charset=utf-8' http-equiv='Content-Type'
+    meta name='author' content='Brandur Leach'
+
+    /link href="//fonts.googleapis.com/css?family=Playfair+Display|EB+Garamond" rel="stylesheet" type="text/css"
+
+    link href="/assets/#{SchemaDoc::Config.release}/app.css" media="screen" rel="stylesheet" type="text/css"
+    script src="/assets/#{SchemaDoc::Config.release}/app.js" type="text/javascript"
+
+    / Enable HTML5 styling for the bane of the Internet
+    /[ if lt IE 9 ]
+      script src="//html5shim.googlecode.com/svn/trunk/html5.js"
+
+  body
+    == yield
