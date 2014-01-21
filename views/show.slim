@@ -1,0 +1,15 @@
+h1= @type_schema["title"].gsub(/Heroku Platform API - /, '')
+- @type_schema["description"].split("\n\n").each do |paragraph|
+  p= paragraph
+table
+  tr
+    th Name
+    th Type
+    th Example
+    th Description
+  - @type_schema["properties"].each do |name, attrs|
+    tr
+      td= name
+      td= type(attrs)
+      td= attrs["example"]
+      td= attrs["description"]
