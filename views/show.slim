@@ -3,13 +3,20 @@ h1= @type_schema["title"].gsub(/Heroku Platform API - /, '')
   p= paragraph
 table
   tr
-    th Name
+    th colspan="2" Name
     th Type
     th Example
     th Description
-  - @type_schema["properties"].each do |name, attrs|
+  - @attributes.each do |attribute|
     tr
-      td= name
-      td= type(attrs)
-      td= attrs["example"]
-      td= attrs["description"]
+      / will only appear once per subobject
+      - if attribute["count"]
+        td rowspan="#{attribute["count"]}"= attribute["supername"]
+      / "subobject" hints that this is a subattribute
+      - if attribute["subobject"]
+        td= attribute["name"]
+      - else
+        td colspan="2"= attribute["name"]
+      td= type(attribute)
+      td= attribute["example"]
+      td= attribute["description"]
