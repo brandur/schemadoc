@@ -1,0 +1,11 @@
+source "https://rubygems.org"
+
+gem "excon"
+gem "multi_json"
+gem "oj"
+gem "puma"
+gem "rack"
+gem "sass"
+gem "sinatra", require: "sinatra/base"
+gem "slim"
+gem "tilt", "~> 1.4.1"
