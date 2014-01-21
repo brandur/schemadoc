@@ -1,6 +1,14 @@
 require "bundler/setup"
 Bundler.require
 
+module Committee
+  class Schema
+    def raw
+      @schema
+    end
+  end
+end
+
 module SchemaDoc
   class Config
     def self.schema_url
@@ -26,6 +34,8 @@ module SchemaDoc
     end
 
     before do
+      @schema_title = @@json["title"]
+      @schema_description = @@json["description"]
     end
 
     get "/" do
@@ -36,15 +46,15 @@ module SchemaDoc
       path = params[:splat][0]
       @type_schema = schema[path] || halt(404)
       @attributes = build_attributes(@type_schema)
+      @object = build_object(@type_schema)
       slim :show
     end
 
     def build_attributes(type_schema)
       attributes = []
       type_schema["properties"].each do |name, attrs|
-        ref = attrs["$ref"] ? schema.find(attrs["$ref"]) : nil
-        if ref
-          attributes << { "name" => name }.merge(ref)
+        if attrs["$ref"]
+          attributes << { "name" => name }.merge(schema.find(attrs["$ref"]))
         else
           first = true
           attrs["properties"].each do |subname, subattrs|
@@ -62,6 +72,23 @@ module SchemaDoc
         end
       end
       attributes
+    end
+
+    def build_object(type_schema)
+      object = {}
+      type_schema["properties"].each do |name, attrs|
+        object[name] = if attrs["$ref"]
+          ref = schema.find(attrs["$ref"])
+          ref["example"]
+        else
+          build_object(attrs)
+        end
+      end
+      object
+    end
+
+    def description(str)
+      str.split("\n\n").map { |p| "<p>#{p}</p>" }.join
     end
 
     def schema

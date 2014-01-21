@@ -1,6 +1,8 @@
+header
+  #title= schema.raw["title"]
+  == description(schema.raw["description"])
 h1= @type_schema["title"].gsub(/Heroku Platform API - /, '')
-- @type_schema["description"].split("\n\n").each do |paragraph|
-  p= paragraph
+== description(@type_schema["description"])
 table
   tr
     th colspan="2" Name
@@ -20,3 +22,10 @@ table
       td= type(attribute)
       td= attribute["example"]
       td= attribute["description"]
+pre
+  code
+    == MultiJson.encode(@object, pretty: true)
+- @type_schema["links"].each do |attrs|
+  h2= attrs["title"]
+  p= attrs["description"]
+  p #{attrs["method"]} #{attrs["href"]}
