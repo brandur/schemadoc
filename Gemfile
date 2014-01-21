@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "committee"
 gem "excon"
 gem "multi_json"
 gem "oj"
@@ -8,4 +9,3 @@ gem "rack"
 gem "sass"
 gem "sinatra", require: "sinatra/base"
 gem "slim"
-gem "tilt", "~> 1.4.1"
