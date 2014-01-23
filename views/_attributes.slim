@@ -1,0 +1,19 @@
+table
+  tr
+    th colspan="2" Name
+    th Type
+    th Example
+    th Description
+  - attributes.each do |attribute|
+    tr
+      / will only appear once per subobject
+      - if attribute["count"]
+        td rowspan="#{attribute["count"]}"= attribute["supername"]
+      / "subobject" hints that this is a subattribute
+      - elsif attribute["subobject"]
+        td= attribute["name"]
+      - else
+        td colspan="2"= attribute["name"]
+      td= type(attribute)
+      td= attribute["example"]
+      td= attribute["description"]

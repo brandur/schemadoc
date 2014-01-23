@@ -100,28 +100,41 @@ module SchemaDoc
       slim :show
     end
 
-    def build_attributes(type_schema)
-      attributes = []
-      type_schema["properties"].each do |name, attrs|
-        if attrs["$ref"]
-          attributes << { "name" => name }.merge(schema.find(attrs["$ref"]))
-        else
-          first = true
-          attrs["properties"].each do |subname, subattrs|
-            subref = subattrs["$ref"] ? schema.find(subattrs["$ref"]) : {}
-            attribute = { "name" => subname, "subobject" => true }.merge(subref)
-            if first
-              attribute.merge!({
-                "supername" => name,
-                "count" => attrs["properties"].count
-              })
-              first = false
-            end
-            attributes << attribute
+    def build_attributes(attrs, name = nil)
+      if attrs["anyOf"]
+        attributes = []
+        attrs["anyOf"].each do |subattrs|
+          subname = subattrs["$ref"].split("/").last
+          attributes += build_attributes(subattrs, subname)
+
+          if attributes.size > 0 && name != nil
+            attributes[0].merge!({
+              "supername" => name,
+              "count" => attributes.size
+            })
+            attributes.each { |a| a.merge!("subobject" => true) }
           end
         end
+        attributes
+      elsif attrs["properties"]
+        attributes = []
+        attrs["properties"].each do |subname, subattrs|
+          attributes += build_attributes(subattrs, subname)
+
+          if attributes.size > 0 && name != nil
+            attributes[0].merge!({
+              "supername" => name,
+              "count" => attributes.size
+            })
+            attributes.each { |a| a.merge!("subobject" => true) }
+          end
+        end
+        attributes
+      elsif attrs["$ref"]
+        build_attributes(schema.find(attrs["$ref"]), name)
+      else
+        [{ "name" => name }.merge(attrs)]
       end
-      attributes
     end
 
     def build_object(type_schema)

@@ -3,29 +3,14 @@ header
   == description(schema.raw["description"])
 h1= @type_schema["title"].gsub(/Heroku Platform API - /, '')
 == description(@type_schema["description"])
-table
-  tr
-    th colspan="2" Name
-    th Type
-    th Example
-    th Description
-  - @attributes.each do |attribute|
-    tr
-      / will only appear once per subobject
-      - if attribute["count"]
-        td rowspan="#{attribute["count"]}"= attribute["supername"]
-      / "subobject" hints that this is a subattribute
-      - if attribute["subobject"]
-        td= attribute["name"]
-      - else
-        td colspan="2"= attribute["name"]
-      td= type(attribute)
-      td= attribute["example"]
-      td= attribute["description"]
+== render :slim, :"_attributes", layout: false, locals: { attributes: @attributes }
 pre
   code
     == MultiJson.encode(@object, pretty: true)
 - @type_schema["links"].each do |attrs|
   h2= attrs["title"]
   p= attrs["description"]
+  - if attrs["schema"]
+    - attributes = build_attributes(attrs["schema"])
+    == render :slim, :"_attributes", layout: false, locals: { attributes: attributes }
   p #{attrs["method"]} #{attrs["href"]}
