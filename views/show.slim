@@ -1,6 +1,7 @@
 header
   #title= schema.raw["title"]
   == description(schema.raw["description"])
+== render :slim, :"_nav", layout: false
 h1= @type_schema["title"].gsub(/Heroku Platform API - /, '')
 == description(@type_schema["description"])
 == render :slim, :"_attributes", layout: false, locals: { attributes: @attributes }
