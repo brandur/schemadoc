@@ -7,10 +7,10 @@ table
   - attributes.each do |attribute|
     tr
       / will only appear once per subobject
-      - if attribute["count"]
+      - if attribute["supername"]
         td rowspan="#{attribute["count"]}"= attribute["supername"]
       / "subobject" hints that this is a subattribute
-      - elsif attribute["subobject"]
+      - if attribute["subobject"]
         td= attribute["name"]
       - else
         td colspan="2"= attribute["name"]
